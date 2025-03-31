@@ -1,0 +1,60 @@
+# SPDX-FileCopyrightText: 2025 Max Mehl <https://mehl.mx>
+#
+# SPDX-License-Identifier: GPL-3.0-only
+
+[tool.poetry]
+name = "home-stream"
+version = "0.1.0"
+description = "Browser and streaming interface for local media files"
+repository = "https://github.com/mxmehl/home-stream"
+authors = ["Max Mehl <mail@mehl.mx>"]
+readme = "README.md"
+keywords = []
+license = "GPL-3.0-only"
+classifiers = []
+
+[tool.poetry.scripts]
+home-stream = "home_stream.app:main"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+flask = "^3.1.0"
+flask-httpauth = "^4.8.0"
+bcrypt = "^4.3.0"
+gunicorn = "^23.0.0"
+pyyaml = "^6.0.2"
+
+[tool.poetry.group.dev.dependencies]
+isort = "^6.0.1"
+pylint = "^3.3.6"
+black = "^25.1.0"
+mypy = "^1.15.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+# FORMATTING settings
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 100
+
+# MYPY settings
+[tool.mypy]
+files = ["home_stream/*.py"]
+disable_error_code = ["import-untyped"]
+
+# Bump-My-Version
+[tool.bumpversion]
+commit = true
+tag = true
+allow_dirty = false
+tag_name = "v{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+regex = true
+search = "^version = \"{current_version}\""
+replace = "version = \"{new_version}\""

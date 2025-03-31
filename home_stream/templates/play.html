@@ -1,0 +1,15 @@
+<!--
+SPDX-FileCopyrightText: 2025 Max Mehl <https://mehl.mx>
+
+SPDX-License-Identifier: GPL-3.0-only
+-->
+
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Player</h2>
+<{{ mediatype }} controls autoplay preload>
+  <source src="{{ url_for('download', filepath=path) }}">
+  Your browser does not support the video tag.
+</video>
+{% endblock %}

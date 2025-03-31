@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: 2025 Max Mehl <https://mehl.mx>
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Path to a directory where the media files are stored. The directory must be accessible by the user
+# running this application
+media_root: /data/media
+# Extensions of video and audio files to be served. The application will only serve files with these
+# extensions
+video_extensions:
+  - avi
+  - mkv
+  - mp4
+  - webm
+audio_extensions:
+  - mp3
+  - ogg
+  - opus
+  - wav
+# List of users and their passwords. The password must be bcrypt-hashed.
+users:
+  # username: bcrypt-hashed password
+  alice: "$2b$12$Z4fsPunIRWgQuYNzds8d6OngVfk0I2k0y8otasGbcZT//H1.rPIBS" # pw = password1
+# The secret key is used to sign cookies and stream password, and should be a long random string
+secret_key: "CHANGE_ME_IN_FAVOUR_OF_A_LONG_PASSWORD"

@@ -1,0 +1,28 @@
+<!--
+SPDX-FileCopyrightText: 2025 Max Mehl <https://mehl.mx>
+
+SPDX-License-Identifier: GPL-3.0-only
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Home Stream</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='pico.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script src="{{ url_for('static', filename='main.js') }}" crossorigin></script>
+</head>
+<body>
+  <main class="container">
+    <h1>{{ path or 'Overview' }}</h1>
+    {% if path %}
+    {% set parent = path.rsplit('/', 1)[0] if '/' in path else '' %}
+    <p><a href="{{ url_for('browse', subpath=parent) }}">⬅ One level up</a></p>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+  </main>
+</body>
+</html>
