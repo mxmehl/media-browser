@@ -4,7 +4,7 @@
 
 """WSGI entry point for the Home Stream application."""
 
-from home_stream.app import create_app as build_app
+from .app import create_app as build_app
 
 
 def create_app(config_path):
