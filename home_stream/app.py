@@ -147,7 +147,7 @@ def main():
         "-c", "--config-file", required=True, help="Path to the app's config file (YAML format)"
     )
     parser.add_argument("--host", default="localhost", help="Hostname of the server")
-    parser.add_argument("-p", "--port", type=int, default=5000, help="Port of the server")
+    parser.add_argument("-p", "--port", type=int, default=8000, help="Port of the server")
     parser.add_argument(
         "-vv",
         "--debug",
