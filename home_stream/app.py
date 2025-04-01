@@ -17,7 +17,6 @@ from flask import (
     session,
     url_for,
 )
-from flask_httpauth import HTTPBasicAuth
 
 from home_stream.helpers import (
     file_type,
@@ -26,10 +25,7 @@ from home_stream.helpers import (
     secure_path,
     serve_via_gunicorn,
     validate_user,
-    verify_password,
 )
-
-auth = HTTPBasicAuth()
 
 
 def create_app(config_path: str) -> Flask:
@@ -42,7 +38,6 @@ def create_app(config_path: str) -> Flask:
 
 def init_routes(app: Flask):
     """Initialize routes for the Flask application."""
-    auth.verify_password(verify_password)
 
     @app.context_processor
     def inject_auth():
@@ -152,7 +147,7 @@ def main():
         "-c", "--config-file", required=True, help="Path to the app's config file (YAML format)"
     )
     parser.add_argument("--host", default="localhost", help="Hostname of the server")
-    parser.add_argument("-p", "--port", type=int, default=5000, help="Port of the server")
+    parser.add_argument("-p", "--port", type=int, default=8000, help="Port of the server")
     parser.add_argument(
         "-vv",
         "--debug",
