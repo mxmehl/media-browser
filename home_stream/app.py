@@ -148,6 +148,7 @@ def main():
     )
     parser.add_argument("--host", default="localhost", help="Hostname of the server")
     parser.add_argument("-p", "--port", type=int, default=8000, help="Port of the server")
+    parser.add_argument("-w", "--workers", type=int, default=4, help="Gunicorn webserver workers")
     parser.add_argument(
         "-vv",
         "--debug",
@@ -162,7 +163,9 @@ def main():
         app = create_app(config_path=os.path.abspath(args.config_file))
         app.run(debug=args.debug, host=args.host, port=args.port)
     else:
-        serve_via_gunicorn(config_file=args.config_file)
+        serve_via_gunicorn(
+            config_file=args.config_file, host=args.host, port=args.port, workers=args.workers
+        )
 
 
 if __name__ == "__main__":
