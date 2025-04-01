@@ -7,11 +7,12 @@
 import hashlib
 import hmac
 import os
-import subprocess
+import sys
 
 import yaml
 from bcrypt import checkpw
 from flask import Flask, abort, current_app, request
+from gunicorn.app.wsgiapp import WSGIApplication
 
 
 def load_config(app: Flask, filename: str) -> None:
@@ -71,16 +72,14 @@ def get_stream_token(username: str) -> str:
     return hmac.new(secret.encode(), username.encode(), hashlib.sha256).hexdigest()[:16]
 
 
-def serve_via_gunicorn(config_file: str) -> None:
-    """Serve the application using Gunicorn."""
-    subprocess.run(
-        [
-            "gunicorn",
-            "-w",
-            "4",
-            "-b",
-            "0.0.0.0:8000",
-            f"home_stream.wsgi:create_app('{config_file}')",
-        ],
-        check=True,
-    )
+def serve_via_gunicorn(config_file: str, host: str, port: int, workers: int) -> None:
+    """Serve the application using Gunicorn programmatically."""
+    sys.argv = [
+        "gunicorn",
+        "-w",
+        str(workers),
+        "-b",
+        f"{host}:{port}",
+        f"home_stream.wsgi:create_app('{config_file}')",
+    ]
+    WSGIApplication().run()
