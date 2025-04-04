@@ -4,9 +4,6 @@
 
 """WSGI entry point for the Home Stream application."""
 
-from .app import create_app as build_app
+from home_stream.app import create_app
 
-
-def create_app(config_path):
-    """Create a Flask application instance."""
-    return build_app(config_path)
+app = create_app("config.yaml")
