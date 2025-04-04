@@ -19,13 +19,24 @@ def load_config(app: Flask, filename: str) -> None:
     """Load configuration from a YAML file."""
     with open(filename, encoding="UTF-8") as f:
         config = yaml.safe_load(f)
-        for key in ("users", "video_extensions", "audio_extensions", "media_root", "secret_key"):
-            if key not in config:
-                raise KeyError(f"Missing '{key}' key in config file.")
+    # Check whether mandatory keys are filled
+    for required_key in (
+        "users",
+        "video_extensions",
+        "audio_extensions",
+        "media_root",
+        "secret_key",
+        "protocol",
+    ):
+        if required_key not in config:
+            raise KeyError(f"Missing '{required_key}' key in config file.")
+    # Combine video and audio extensions
     config["media_extensions"] = config.get("video_extensions", []) + config.get(
         "audio_extensions", []
     )
+    # Add the config file content to the Flask app config
     for key, value in config.items():
+        # Secret key as built-in Flask config and also as the stream secret
         if key == "secret_key":
             app.secret_key = value
             app.config["STREAM_SECRET"] = value
@@ -66,10 +77,10 @@ def validate_user(username, password):
     return False
 
 
-def get_stream_token(username: str) -> str:
-    """Generate a 16-chars permanent token for streaming based on username and secret key."""
+def get_stream_token(username: str, chars: int = 16) -> str:
+    """Generate a n-chars permanent token for streaming based on username and secret key."""
     secret = current_app.config["STREAM_SECRET"]
-    return hmac.new(secret.encode(), username.encode(), hashlib.sha256).hexdigest()[:16]
+    return hmac.new(secret.encode(), username.encode(), hashlib.sha256).hexdigest()[:chars]
 
 
 def serve_via_gunicorn(config_file: str, host: str, port: int, workers: int) -> None:
@@ -83,3 +94,10 @@ def serve_via_gunicorn(config_file: str, host: str, port: int, workers: int) -> 
         f"home_stream.wsgi:create_app('{config_file}')",
     ]
     WSGIApplication().run()
+
+
+def truncate_secret(secret: str, chars: int = 8) -> str:
+    """Truncate the secret key to a specified length"""
+    if len(secret) > chars:
+        return secret[:chars] + "*" * (len(secret) - chars)
+    return secret
