@@ -75,11 +75,12 @@ or by using online tools like [bcrypt-generator.com](https://bcrypt-generator.co
 Start the app (session login + streaming):
 
 ```bash
-home-stream -c config.yaml --debug  # for testing, uses Flask development server
-home-stream -c config.yaml          # for production, uses gunicorn
+home-stream -c config.yaml  # uses Flask development server
 ```
 
 Log in via browser, by default on [localhost:8000](http://localhost:8000). Browse and play media, or copy permanent stream URLs.
+
+For productive use, consider using uWSGI. However, note that streaming many and large chunks of files may trigger issues with apps like gunicorn. It is planned for this project to document practical solutions soon.
 
 ### Usage Scenarios
 

@@ -23,7 +23,6 @@ from home_stream.helpers import (
     get_stream_token,
     load_config,
     secure_path,
-    serve_via_gunicorn,
     truncate_secret,
     validate_user,
 )
@@ -143,24 +142,19 @@ def main():
     )
     parser.add_argument("--host", default="localhost", help="Hostname of the server")
     parser.add_argument("-p", "--port", type=int, default=8000, help="Port of the server")
-    parser.add_argument("-w", "--workers", type=int, default=4, help="Gunicorn webserver workers")
     parser.add_argument(
         "-vv",
         "--debug",
         action="store_true",
-        help="Enable debug mode. Starts a Flask debug server instead of Gunicorn.",
+        help="Enable debug mode",
         default=False,
     )
 
     args = parser.parse_args()
 
-    if args.debug:
-        app = create_app(config_path=os.path.abspath(args.config_file))
-        app.run(debug=args.debug, host=args.host, port=args.port)
-    else:
-        serve_via_gunicorn(
-            config_file=args.config_file, host=args.host, port=args.port, workers=args.workers
-        )
+    # Create the app instance with the Flask development server
+    app = create_app(config_path=os.path.abspath(args.config_file))
+    app.run(debug=args.debug, host=args.host, port=args.port)
 
 
 if __name__ == "__main__":
