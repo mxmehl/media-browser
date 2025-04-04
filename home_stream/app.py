@@ -24,6 +24,7 @@ from home_stream.helpers import (
     load_config,
     secure_path,
     serve_via_gunicorn,
+    truncate_secret,
     validate_user,
 )
 
@@ -42,7 +43,6 @@ def init_routes(app: Flask):
     @app.context_processor
     def inject_auth():
         return {
-            "auth_password": getattr(request, "password", ""),
             "stream_token": get_stream_token(session["username"]) if "username" in session else "",
         }
 
@@ -118,20 +118,14 @@ def init_routes(app: Flask):
             username=session.get("username"),
         )
 
-    @app.route("/dl/<path:filepath>")
-    def download(filepath):
-        if not is_authenticated():
-            return redirect(url_for("login", next=request.full_path))
-
-        full_path = secure_path(filepath)
-        if os.path.isfile(full_path):
-            return send_file(full_path)
-        abort(404)
-
     @app.route("/dl-token/<username>/<token>/<path:filepath>")
     def download_token_auth(username, token, filepath):
         expected = get_stream_token(username)
         if token != expected:
+            app.logger.info(
+                f"Invalid dl-token for user '{username}'. "
+                f"Expected '{truncate_secret(expected)}', got '{token}'"
+            )
             abort(403)
         full_path = secure_path(filepath)
         if os.path.isfile(full_path):

@@ -77,10 +77,10 @@ def validate_user(username, password):
     return False
 
 
-def get_stream_token(username: str) -> str:
-    """Generate a 16-chars permanent token for streaming based on username and secret key."""
+def get_stream_token(username: str, chars: int = 16) -> str:
+    """Generate a n-chars permanent token for streaming based on username and secret key."""
     secret = current_app.config["STREAM_SECRET"]
-    return hmac.new(secret.encode(), username.encode(), hashlib.sha256).hexdigest()[:16]
+    return hmac.new(secret.encode(), username.encode(), hashlib.sha256).hexdigest()[:chars]
 
 
 def serve_via_gunicorn(config_file: str, host: str, port: int, workers: int) -> None:
@@ -94,3 +94,10 @@ def serve_via_gunicorn(config_file: str, host: str, port: int, workers: int) -> 
         f"home_stream.wsgi:create_app('{config_file}')",
     ]
     WSGIApplication().run()
+
+
+def truncate_secret(secret: str, chars: int = 8) -> str:
+    """Truncate the secret key to a specified length"""
+    if len(secret) > chars:
+        return secret[:chars] + "*" * (len(secret) - chars)
+    return secret
