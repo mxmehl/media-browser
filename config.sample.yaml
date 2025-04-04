@@ -23,3 +23,5 @@ users:
   alice: "$2b$12$Z4fsPunIRWgQuYNzds8d6OngVfk0I2k0y8otasGbcZT//H1.rPIBS" # pw = password1
 # The secret key is used to sign cookies and stream password, and should be a long random string
 secret_key: "CHANGE_ME_IN_FAVOUR_OF_A_LONG_PASSWORD"
+# Protocol used to serve the files. Can be either http or https
+protocol: https

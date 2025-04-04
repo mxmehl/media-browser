@@ -19,13 +19,24 @@ def load_config(app: Flask, filename: str) -> None:
     """Load configuration from a YAML file."""
     with open(filename, encoding="UTF-8") as f:
         config = yaml.safe_load(f)
-        for key in ("users", "video_extensions", "audio_extensions", "media_root", "secret_key"):
-            if key not in config:
-                raise KeyError(f"Missing '{key}' key in config file.")
+    # Check whether mandatory keys are filled
+    for required_key in (
+        "users",
+        "video_extensions",
+        "audio_extensions",
+        "media_root",
+        "secret_key",
+        "protocol",
+    ):
+        if required_key not in config:
+            raise KeyError(f"Missing '{required_key}' key in config file.")
+    # Combine video and audio extensions
     config["media_extensions"] = config.get("video_extensions", []) + config.get(
         "audio_extensions", []
     )
+    # Add the config file content to the Flask app config
     for key, value in config.items():
+        # Secret key as built-in Flask config and also as the stream secret
         if key == "secret_key":
             app.secret_key = value
             app.config["STREAM_SECRET"] = value

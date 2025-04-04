@@ -102,6 +102,7 @@ def init_routes(app: Flask):
             folders=folders,
             files=files,
             username=session.get("username"),
+            protocol=app.config["PROTOCOL"],
         )
 
     @app.route("/play/<path:filepath>")
